@@ -13,11 +13,11 @@ I'm starting my journey in python and Data Science. In this portfolio you will f
 
 My credentials include be a pharmacy student-UFBA,  large experience in computational chemistry studies and database feeding with hematological analysis.
 
-**Background in:** Pymol, FTmap, PeptiMap, ACcluster and python.
+**Background in:** Pymol, FTmap, PeptiMap, ACCLUSTER and python.
 
 **Links:**
-* [LinkedIn](https://www.linkedin.com/in/gessualdo-seixas-4861b975/)
+* [LinkedIn](https://bit.ly/2QsMMg4)
+* [Lattes](https://bit.ly/31AyfW1)
 
 
-
-## Projeto em breve serão postados! 
+## Projetos em breve serão postados! 
