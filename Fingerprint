@@ -1,0 +1,35 @@
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+
+import os
+
+def plip(diretorio):
+    tree = ET.parse(diretorio)
+    root = tree.getroot()
+             
+    fingerprint = set()
+    for inter_type in ['hydrophobic_interaction', 'hydrogen_bond', 'water_bridge', 'pi_stack']:
+        for inter in root.findall('.//' + inter_type):
+            resnr = inter.find('./resnr').text
+            reschain = inter.find('./reschain').text
+            typ = inter.tag
+            tup = (resnr, reschain, typ)
+            fingerprint.add(tup)
+
+            
+            
+    return fingerprint
+    
+    
+fp1 = plip('/home/gessualdo/gessualdo/resultados/plip/report.xml')
+fp2 = plip('/home/gessualdo/gessualdo/resultados/peptide/3B24/report.xml')
+
+
+def tanimoto(a, b):
+    tanimoto = len((a).intersection(b))/len((a).union(b))
+
+    return (tanimoto)
+    
+  tanimoto(fp1, fp2)
+  
+  
