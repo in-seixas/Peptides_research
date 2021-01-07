@@ -1,0 +1,159 @@
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+import numpy as np
+import seaborn as sb
+import os
+from glob import glob
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def plip(arquivo):
+    tree = ET.parse(arquivo)
+    root = tree.getroot()
+    if len(root.findall('.//bindingsite')) != 1:
+        print(arquivo)
+        raise Exception("MAIS DE UM BINDING SITE FOI ENCONTRADO!")
+     
+    num_heavy_atoms = root.find('.//num_heavy_atoms').text
+    num_hbd = root.find('.//num_hbd').text
+    num_unpaired_hbd = root.find('.//num_unpaired_hbd').text
+    num_hba = root.find('.//num_hba').text
+    num_unpaired_hba = root.find('.//num_unpaired_hba').text
+    num_aromatic_rings = root.find('.//num_aromatic_rings').text
+    num_rotatable_bonds = root.find('.//num_rotatable_bonds').text
+    molweight = root.find('.//molweight').text
+    logp = root.find('.//logp').text
+    
+    props = {
+        'num_heavy_atoms':int(num_heavy_atoms),
+        'num_hbd': int(num_hbd),
+        'num_unpaired_hbd':int(num_unpaired_hbd),
+        'num_hba':int(num_hba),
+        'num_unpaired_hba':int(num_unpaired_hba),
+        'num_aromatic_rings':int(num_aromatic_rings),
+        'num_rotatable_bonds':int(num_rotatable_bonds),
+        'molweight':float(molweight),
+        'logp':float(logp)    
+    }
+    
+    fingerprint = []
+    for inter_type in ['hydrophobic_interaction','hydrogen_bond','water_bridge','pi_stack','salt_bridge',
+                       'pi_cation_interaction','halogen_bond','metal_complex']:
+        for inter in root.findall('.//' + inter_type):
+            resnr = inter.find('./resnr').text
+            reschain = inter.find('./reschain').text
+            typ = inter.tag
+            tup = (resnr, reschain, typ)
+            fingerprint.append(tup)
+    return fingerprint, props
+    
+    
+    caminho = glob('/home/gessualdo/gessualdo/test1/*/report.xml')
+    
+    
+    def tversky(x,y,alfa,beta):
+    if x == set() and y == set():
+        tversky = 0
+    else:
+        tversky = len((x).intersection(y))/(len((x).intersection(y))+alfa*len(x-y)+beta*len(y-x))
+    
+    return (tversky)
+
+pdb_ids = []
+interactions = []
+num_heavy_atoms = []
+num_hbd = []
+num_unpaired_hbd = []
+num_hba = []
+num_unpaired_hba = []
+num_aromatic_rings = []
+num_rotatable_bonds = []
+molweight = []
+logp = []
+hydrophobic_interaction = []
+hydrogen_bond = []
+water_bridge = []
+pi_stack = []
+salt_bridge = []
+pi_cation_interaction = []
+halogen_bond = []
+metal_complex = []
+
+for report1 in caminho:
+    fp1, props = plip(report1)
+    interactions.append(len(fp1))
+    pdb_ids.append(report1.split('/')[-2])
+    num_heavy_atoms.append(list(props.values())[0])
+    num_hbd.append(list(props.values())[1])
+    num_unpaired_hbd.append(list(props.values())[2])
+    num_hba.append(list(props.values())[3])
+    num_unpaired_hba.append(list(props.values())[4])
+    num_aromatic_rings.append(list(props.values())[5])
+    num_rotatable_bonds.append(list(props.values())[6])
+    molweight.append(list(props.values())[7])
+    logp.append(list(props.values())[8])
+   
+    
+    hydrophobic_interaction_count = 0
+    hydrogen_bond_count = 0
+    water_bridge_count = 0
+    pi_stack_count = 0
+    salt_bridge_count = 0
+    pi_cation_interaction_count = 0
+    halogen_bond_count = 0
+    metal_complex_count = 0
+    
+    for inter in fp1:
+        resnr, reschain, typ = inter
+        if typ == 'hydrophobic_interaction':
+            hydrophobic_interaction_count = hydrophobic_interaction_count + 1
+        elif typ == 'hydrogen_bond':
+            hydrogen_bond_count = hydrogen_bond_count + 1
+        elif typ == 'water_bridge':
+            water_bridge_count = water_bridge_count + 1
+        elif typ == 'pi_stack':
+            pi_stack_count = pi_stack_count + 1
+        elif typ == 'salt_bridge':
+            salt_bridge_count = salt_bridge_count + 1
+        elif typ == 'pi_cation_interaction':
+            pi_cation_interaction_count = pi_cation_interaction_count + 1
+        elif typ == 'halogen_bond':
+            halogen_bond_count = halogen_bond_count + 1
+        elif typ == 'metal_complex':
+            metal_complex_count = metal_complex_count + 1
+        else:
+            raise Exception('TIPO DE INTERAÇÃO DESCONHECIDA')
+            
+
+    hydrophobic_interaction.append(hydrophobic_interaction_count)
+    hydrogen_bond.append(hydrogen_bond_count)
+    water_bridge.append(water_bridge_count)
+    pi_stack.append(pi_stack_count)
+    salt_bridge.append(salt_bridge_count)
+    pi_cation_interaction.append(pi_cation_interaction_count)
+    halogen_bond.append(halogen_bond_count)
+    metal_complex.append(metal_complex_count)
+
+data = {
+    'PDB.ID':pdb_ids, 'Num.Interactions':interactions, 
+    'num_heavy_atoms':num_heavy_atoms, 'num_hbd':num_hbd, 
+    'num_unpaired_hbd':num_unpaired_hbd, 'num_hba':num_hba,
+    'num_unpaired_hba':num_unpaired_hba,
+    'num_aromatic_rings':num_aromatic_rings,
+    'num_rotatable_bonds':num_rotatable_bonds,
+    'molweight':molweight,'logp':logp,
+    
+    'hydrophobic_interaction':hydrophobic_interaction,
+    'hydrogen_bond':hydrogen_bond,
+    'water_bridge':water_bridge,
+    'pi_stack':pi_stack,
+    'salt_bridge':salt_bridge,
+    'pi_cation_interaction':pi_cation_interaction,
+    'halogen_bond':halogen_bond,
+    'metal_complex':metal_complex
+    }
+
+df1 = pd.DataFrame(data=data)
+print(df1)
+
+df1.to_csv('/home/gessualdo/Documentos/arquivos_peptides/peptides_properties.csv',index=False)
