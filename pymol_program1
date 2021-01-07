@@ -1,0 +1,19 @@
+from pymol import cmd as pm
+import subprocess
+
+
+
+for obj in pm.get_object_list(): #On
+    n_atm = pm.count_atoms(obj + ' and hetatm and v.') #On = n
+    if n_atm > 0: #On = 0.4n = 71
+        frag = False
+        if pm.count_atoms(obj + ' and organic and not elem H and not inorganic') < 15:
+            frag = True
+            print(obj, frag)
+        else:
+            frag = False
+            print(obj, frag)
+        pdb = '/home/gessualdo/gessualdo/test1/' + obj + '.pdb'
+        pm.save(pdb, obj + ' and v.')
+        caminho = '/home/gessualdo/anaconda3/envs/envname/bin/plip'
+        plip = subprocess.run([caminho, '-f',pdb,'-o','/home/gessualdo/gessualdo/test1/' + obj, '-x'])
