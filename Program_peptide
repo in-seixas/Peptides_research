@@ -1,0 +1,11 @@
+import subprocess
+import pandas as pd
+
+df = pd.read_csv("/home/gessualdo/Documentos/arquivos_peptides/peptbase.csv")
+for idx, row in df.iterrows():
+    pdb_id = row['PDB.ID']
+    peptide_chain = row['Peptide.Chain']
+    print(pdb_id, peptide_chain)
+    caminho = '/home/gessualdo/anaconda3/envs/envname/bin/plip'
+    plip = subprocess.run([caminho, '-i', pdb_id, '--peptide', peptide_chain,
+                           '-o', '/home/gessualdo/gessualdo/test1/' + pdb_id, '-x'])
