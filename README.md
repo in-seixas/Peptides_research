@@ -1,7 +1,7 @@
 # in-seixas_data_science-
 
 <p align="center">
-  <img src="banner.png" >
+  <img src="file:///home/gessualdo/Downloads/Junior-Seixas---capa-linkedIn3.png" >
 </p>
 
 # Junior Seixas
