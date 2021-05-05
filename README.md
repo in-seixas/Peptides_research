@@ -1,8 +1,8 @@
-# in-seixas_data_science-
 
-<p align="center">
-  <img src="file:///home/gessualdo/Downloads/Junior-Seixas---capa-linkedIn3.png" >
-</p>
+
+
+![Junior-Seixas---capa-linkedIn3](https://user-images.githubusercontent.com/70270872/117090205-13f73100-ad2e-11eb-8206-bd0add57651a.png) 
+
 
 # Junior Seixas
 <sub>*Lead Data Scientist* at Space Operations Center</sub>
